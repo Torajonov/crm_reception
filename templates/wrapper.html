@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1">
+    <!-- CSS-->
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <script src="/static/js/jquery-2.1.4.min.js"></script>
+    <title>English Life Admin</title>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries-->
+    <!--if lt IE 9
+    script(src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js')
+    script(src='https://oss.maxcdn.com/libs/respond./static/js/1.4.2/respond.min.js')
+    -->
+  </head>
+  <body class="sidebar-mini fixed">
+    <div class="wrapper">
+      <!-- Navbar-->
+      <header class="main-header hidden-print">
+        <a class="logo" href="{% url 'main:home' %}"><img style="height:65px; width: 100px;" src="/static/images/logo.jpg"  alt=""></a>
+        <nav class="navbar navbar-static-top">
+          <!-- Sidebar toggle button--><a class="sidebar-toggle" href="#" data-toggle="offcanvas"></a>
+          <!-- Navbar Right Menu-->
+          <div class="navbar-custom-menu">
+            <ul class="top-nav">
+              <!-- User Menu-->
+              <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus fa-lg"></i> Fan</a>
+                <ul class="dropdown-menu settings-menu">
+                  <li>
+                    <form action="{% url 'main:add_subject' %}" method="GET">
+                      <input type="text" class="form-control" placeholder="Fanni nomini yozing" name="name">
+                      <button type="submit" class="btn btn-primary">Qo'shish</button>
+                    </form>  
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus fa-lg"></i> Sabab</a>
+                <ul class="dropdown-menu settings-menu">
+                  <li>
+                    <form action="{% url 'main:add_camewith' %}" method="GET">
+                      <input type="text" class="form-control" placeholder="Sababni yozing" name="name">
+                      <button type="submit" class="btn btn-primary">Qo'shish</button>
+                    </form>  
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus fa-lg"></i></a>
+                <ul class="dropdown-menu settings-menu">
+                  <li><a href="{% url 'main:add_teacher' %}"><i class="fa fa-plus fa-lg"></i> O'qituvchi</a></li>
+                  <li><a href="{% url 'main:add_group' %}"><i class="fa fa-plus fa-lg"></i> Guruh</a></li>
+                  <li><a href="{% url 'main:add_student' %}"><i class="fa fa-plus fa-lg"></i> O'quvchi</a></li>
+                </ul>
+              </li>
+              <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user fa-lg"></i></a>
+                <ul class="dropdown-menu settings-menu">
+                  <li><a href="{% url 'main:logout' %}"><i class="fa fa-sign-out fa-lg"></i> Chiqish</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!-- Side-Nav-->
+      <aside class="main-sidebar hidden-print">
+        <section class="sidebar">
+          <!-- Sidebar Menu-->
+          <ul class="sidebar-menu">
+            <li class=""><a href="{% url 'main:home' %}"><i class="fa fa-home"></i><span>Bosh sahifa</span></a></li>
+            <li><a href="{% url 'main:students' %}"><i class="fa fa-graduation-cap"></i><span> O'quvchilar</span></a></li>
+            <li><a href="{% url 'main:teachers' %}"><i class="fa fa-user-secret"></i><span> O'qituvchilar</span></a></li>
+            <li><a href="{% url 'main:groups' %}"><i class="fa fa-list"></i><span> Guruhlar</span></a></li>
+            <li><a href="{% url 'main:new_groups' %}"><i class="fa fa-tasks"></i><span> Qabul</span></a></li>
+            <li><a href="{% url 'main:brithday' %}"><i class="fa fa-birthday-cake"></i><span> Tug'ilgan kunlar</span></a></li>
+            <li><a href="{% url 'main:faq' %}"><i class="fa fa-flag"></i><span> O'qib chiqish shart</span></a></li>
+          </ul>
+        </section>
+      </aside>
+{% block content %}
+    
+{% endblock content %}
+
+<style>
+  @media (max-width: 770px) {
+    .desktop{
+        display: none;
+    }
+}
+  @media (min-width: 770px) {
+    .mobile{
+        display: none;
+    }
+}
+</style>
+
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/plugins/pace.min.js"></script>
+    <script src="/static/js/main.js"></script>
+  </body>
+</html>

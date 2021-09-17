@@ -1,0 +1,80 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-3">
+                            
+                            {% if stu.image %}
+                            <img src="{{stu.image.url}}" width="100" alt="">
+                            {% endif %}
+                            
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <h1>{{stu.name}}</h1>
+                            <h3>{{stu.surname}}</h3>
+                        </div>
+                        <div class="col-md-5">
+                            <p><b>Tug'ilgan sanasi: </b>{{stu.brith}}</p>
+                            <p><b>Telefon raqami: </b>{{stu.tel_num}}</p>
+                            <p><b>Yashash manzili: </b>{{stu.place}}</p>
+                            <p><b>Darslar soni: </b>{{stu.countsub}}</p>
+                            <p><b>To'lov qilishi kerak: </b>{{stu.allprice}} so'm</p>
+                        </div>
+                        <div class="btn-group col-md-3">
+                            <a href="{% url 'main:update_student' stu.pk %}" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                            <a href="{% url 'main:delete_student' stu.pk %}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                            
+                            {% if stu.password_img %}
+                                <a href="{{stu.password_img.url}}" class="btn btn-primary">Passportini ko'rish</a>
+                            {% endif %}
+                                
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="btn-group">
+                        <a href="#" id="pk" data-pk="{{stu.pk}}"></a>
+                        <div id="dates">
+
+                            {% for his in stu.history.all %}
+                            
+                            {% if his.came == True %}
+                            <p class="label label-success" title="{{his.time}}"><i class="fa fa-circle"></i> {{his.time}}</p>
+                            {% elif his.apset == True %}
+                            <p class="label label-warning" title="{{his.time}}"><i class="fa fa-circle-thin"></i> {{his.time}}</p>
+                            {% else %}
+                            <p class="label label-danger" title="{{his.time}}"><i class="fa fa-circle-thin"></i> {{his.time}}</p>
+                            {% endif %}
+                            {% endfor %}
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="btn-group">
+                        <a href="#" id="pk" data-pk="{{stu.pk}}"></a>
+                        <div id="dates">
+
+                            {% for his in stu.payment.all %}
+                            <p class="label label-primary" title="{{his.time}}"><i class="fa fa-circle"></i> {{his.time}} <span class="label label-success">{{his.payed}}</span></p>
+                            {% endfor %}
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+    

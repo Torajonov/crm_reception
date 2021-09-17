@@ -1,0 +1,104 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <h2>Guruh >>> {{group.name}}</h2><hr>
+        <div class="card">
+            <h3 class="card-title">Bordered Table</h3>
+            <div class="btn-group">
+                <a href="#" id="getPlus" class="btn btn-success" title="Davomat olish uchun bosing">Davomat olish</a>
+            </div><hr>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th class="desktop">#</th>
+                  <th>F,I</th>
+                  <th class="desktop">Darslar soni</th>
+                  <th class="desktop">Darslar puli</th>
+                  <th>Keldi/Kemadi</th>
+                  <th class="desktop">So'ngi to'lov sanasi</th>
+                  <th>To'lov qildi</th>
+                </tr>
+              </thead>
+              <tbody>
+                  
+                  {% for stu in group.student.all %}
+                    <tr>
+                        <td class="desktop"><img src="{{stu.image.url}}" height="50" alt=""></td>
+                        <td><a href="{% url 'main:student' stu.pk %}">{{stu.name}}, {{stu.surname}}</a></td>
+                        <td class="desktop">{{stu.countsub}} ta</td>
+                        <td class="desktop">{{stu.allprice}} so'm</td>
+                        <td>
+                            <div class="btn-group cameOrNotCame">
+                                <a id="btn" href="#" data-pk="{{stu.pk}}" data-action="came" class="btn btn-success"><i class="fa fa-check"></i></a>
+                                <a id="btn" href="#" data-pk="{{stu.pk}}" data-action="apset" class="btn btn-warning"><i class="fa fa-remove"></i></a>
+                                <a id="btn" href="#" data-pk="{{stu.pk}}" data-action="none" class="btn btn-danger"><i class="fa fa-remove"></i></a>
+                            </div>
+                        </td>
+                        <td class="desktop">{{stu.payment.first.time}}</td>
+                        <td>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <input type="number" id="value" class="form-control" value="{{stu.group.payment}}">
+                                    
+                                    {% if stu.price == 0 %}
+                                        <a href="#" class="btn btn-primary" id="pay" data-pk="{{stu.pk}}" data-action="full">To'lash</a>
+                                        {% else %}
+                                        <a href="#" class="btn btn-success" id="pay" data-pk="{{stu.pk}}" data-action="skit">Chegirma</a>
+                                    {% endif %}
+                                        
+                                </div>
+                            </form>
+                            <p class="label label-success" id="pay_free">{{stu.price}} so'm chegirma</p>
+                        </td>
+                    </tr>
+                  {% endfor %}
+                      
+              </tbody>
+            </table>
+          </div>
+    </div>
+
+    <script>
+        // keldi ketti uchun
+        $('.cameOrNotCame').hide()
+        $('#getPlus').on("click", function(){
+            $('.cameOrNotCame').show()
+        })
+        $('a#btn').on('click', function(){
+            // $(this).parent('div').hide()
+            if (window.XMLHttpRequest) {
+                var xhttp=new XMLHttpRequest();
+            } else {  // code for IE6, IE5
+                var xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            let pk = $(this).data('pk')
+            let action = $(this).data('action')
+            if(action === "came"){
+                $(this).parent('div').html('<b class="label label-lg label-success">Keldi</b>')
+            }else if(action === "apset"){
+                $(this).parent('div').html('<b class="label label-lg label-warning">Kelmadi</b>')
+            }else{
+                $(this).parent('div').html('<b class="label label-lg label-danger">Kelmadi</b>')
+            }
+            xhttp.open("GET", `/get_plus/?data=${pk}&action=${action}`, true);
+            xhttp.send();
+        })
+        // to'lov uchun
+        $('a#pay').on("click", function(){
+            if (window.XMLHttpRequest) {
+                var xhttp=new XMLHttpRequest();
+            } else {  // code for IE6, IE5
+                var xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            let value = $(this).parent('div.form-group').children('#value').val()
+            let action = $(this).data('action')
+            let pk = $(this).data('pk')
+            $(this).addClass('disabled')
+            xhttp.open("GET", `/pay/?pk=${pk}&price=${value}&action=${action}`, true);
+            xhttp.send();
+        })
+    </script>
+{% endblock content %}
+    

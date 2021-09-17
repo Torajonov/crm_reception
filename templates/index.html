@@ -1,0 +1,60 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+  
+
+<div class="content-wrapper">
+  <div class="page-title">
+    <div>
+      
+      <h1><span class="bg-primary btn"><i class="fa fa-institution"></i>English Life </span > o'quv markazi uchun maxsus dastur !</h1>
+      <p><i class="fa fa-plus"></i> O'quv markazingiz uchun ajoyib dastur!</p>
+    </div>
+  </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <h3 class="card-title">O'quvchilar</h3>
+          <div class="card-body d-flex">
+            <h1><i class="fa fa-users"></i> {{students}} ta</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <h3 class="card-title">Guruhlar</h3>
+          <div class="card-body d-flex">
+            <h1><i class="fa fa-list"></i> 
+              {{groups.all.count}} ta</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <h3 class="card-title">O'qituvchilar</h3>
+          <div class="card-body d-flex">
+            <h1><i class="fa fa-user-secret"></i> {{request.user.teacher.all.count}} ta</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h2>O'quvchilarni kelish sabablari</h2>
+    <div class="row">
+      
+      {% for came in camewith %}
+        <div class="col-md-3">
+          <div class="card">
+            <h3>{{came.name}}</h3>
+            <h4 class="btn btn-warning">{{came.students.all.count}} ta</h4>
+          </div>
+        </div>
+      {% endfor %}
+        
+    </div>
+  </div>
+</div>
+    <!-- Javascripts-->
+    
+    {% endblock content %}

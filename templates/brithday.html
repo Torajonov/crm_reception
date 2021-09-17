@@ -1,0 +1,34 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="content-wrapper" style="background-image: url('/static/images/brithdaybg.jpg');">
+        <center>
+            <img src="/static/images/brithdaycenter.jfif" width="200" alt=""><br>
+            <div class="row">
+            {% for stu in stu %}
+                <div class="col-md-6">
+
+                    <div class="alert alert-dismissible alert-warning">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <h1>{{stu.name}}, {{stu.surname}}</h1>
+                                <h3>Tug'ilgan sanasi: {{stu.brith}}</h3>
+                            </div>
+                            <div class="col-md-3">
+                                <img height="300" src="{{stu.image.url}}" alt="">
+                            </div>
+                            <div class="col-md-4 btn-success" style="padding: 15px; border-bottom-left-radius: 10px; border-bottom-right-radius: 15px;">
+                                <h4>Qo'ng'iroq qilib tabriklang !</h4>
+                                <b><i class="fa fa-phone"></i> +998 {{stu.tel_num}}</b>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            {% endfor %}
+            </div>
+        </center>
+    </div>
+{% endblock content %}
+    

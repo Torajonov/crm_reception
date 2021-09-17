@@ -1,0 +1,75 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content-wrapper">
+<div class="row">
+    <div class="col-md-7">
+        <form method="POST" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
+            <div class="card">
+                <h3 class="card-title">Guruh Qo'shish</h3>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Nomi</label>
+                        <div class="col-md-8">
+                            <input name="name" class="form-control" type="text" placeholder="Nomini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Fani</label>
+                        <div class="col-md-8">
+                            {{form.subject}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Kunlari</label>
+                        <div class="col-md-8">
+                            <input name="kunlari" class="form-control" placeholder="Qaysi kunlarda bo'lishini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Vaqti</label>
+                        <div class="col-md-8">
+                            <input name="time" class="form-control" placeholder="13:00-15:00">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Bir oylik to'lov</label>
+                        <div class="col-md-8">
+                            <input name="payment" type="number" class="form-control" placeholder="Bir oylik to'lovini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Bir oyda nechta dars</label>
+                        <div class="col-md-8">
+                            <input name="days_in_month" type="number" class="form-control" placeholder="Bir oydagi darslar sonini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">O'qituvchini tanlang</label>
+                        <div class="col-md-8">
+                            {{form.teacher}} 
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-3">
+                            <button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>TASDIQLASH</button>
+                            <a class="btn btn-default icon-btn" href="{% url 'main:home' %}"><i class="fa fa-fw fa-lg fa-times-circle"></i>BEKOR QILISH</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <img style="width: 100%;" class="card" src="/static/images/group.jpg" alt="">
+    </div>
+</div>
+</div>
+<script>
+    $("#id_teacher").addClass('form-control')
+    $("#id_subject").addClass('form-control')
+</script>
+{% endblock content %}

@@ -1,0 +1,103 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content-wrapper">
+<div class="row">
+    <div class="col-md-7">
+        <form method="POST" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
+            <div class="card">
+                <h3 class="card-title">O'quvchi Qo'shish</h3>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Ismi</label>
+                        <div class="col-md-8">
+                            <input value="{{form.name.value}}" name="name" class="form-control" type="text" placeholder="Ismini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Familiya</label>
+                        <div class="col-md-8">
+                            <input value="{{form.surname.value}}" name="surname" class="form-control col-md-8" type="text" placeholder="Familiyasini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Tug'ilgan sanasi</label>
+                        <div class="col-md-8">
+                            <input value="{{form.brith.value}}" name="brith" class="form-control col-md-8" type="date" placeholder="Familiyasini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Yashash joyi</label>
+                        <div class="col-md-8">
+                            <input value="{{form.place.value}}" name="place" class="form-control" placeholder="Yashash manzilini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Tel. raqami</label>
+                        <div class="col-md-8">
+                            <input value="{{form.tel_num.value}}" name="tel_num" class="form-control col-md-8" type="number" placeholder="99 999 99 99">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Rasmini tanlang</label>
+                        <div class="col-md-8">
+                            
+                            {% if form.image.value %}
+                            <a href="{{form.image.value.url}}" class="label label-success">Hozirgini ko'rish</a>
+                            {% endif %}
+                                
+                            <input value="" name="image" class="form-control" type="file">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Guruhni tanlang</label>
+                        <div class="col-md-8">
+                            {{form.group}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Chegirma</label>
+                        <div class="col-md-8">
+                            <input value="{{form.price.value}}" name="price" class="form-control col-md-8" type="number" placeholder="Chegirma pulini yozing">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Markazimizni qayerdan topdi?</label>
+                        <div class="col-md-8">
+                            {{form.camewith}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Passport rasmi</label>
+                        <div class="col-md-8">
+                            {% if form.image.value %}
+                            <a href="{{form.password_img.value.url}}" class="label label-success">Hozirgini ko'rish</a>
+                            {% endif %}
+                                
+                            <input name="password_img" class="form-control" type="file">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-3">
+                            <button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Tasdiqlash</button>
+                            <a class="btn btn-default icon-btn" href="{% url 'main:home' %}"><i class="fa fa-fw fa-lg fa-times-circle"></i>Bekor qilish</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <img style="width: 100%;" class="card" src="/static/images/student.jpg" alt="">
+    </div>
+</div>
+</div>
+<script>
+    $('input').addClass('form-control')
+    $('#id_group').addClass('form-control')
+    $('#id_camewith').addClass('form-control')
+</script>
+{% endblock content %}

@@ -1,0 +1,61 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <h2 id="nav-tabs">O'quvchilar</h2>
+        <div class="row">
+            <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                <table class="table table-hover table-bordered" id="sampleTable">
+                    <thead>
+                    <tr>
+                        <th class="desktop">Rasmi</th>
+                        <th>I,F</th>
+                        <th>Guruhi</th>
+                        <th>Tel. raqami</th>
+                        <th class="desktop">Tug'ilgan sanasi</th>
+                        <th class="desktop">Tug'ilgan joyi</th>
+                        <th class="desktop">Bitta dars uchun to'lov</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    {% for student in request.user.students.all %}
+                    
+                    {% if student.group.active == True %}
+                        <tr>
+                            <td class="desktop">
+                                
+                                {% if student.image %}
+                                <img src="{{student.image.url}}" style="max-height: 30px;" alt="">
+                                {% endif %}
+                                    
+                            </td>
+                            <td><a href="{% url 'main:student' student.pk %}">{{student.name}}, {{student.surname}}</a></td>
+                            <td>{{student.group.name}}</td>
+                            <td>{{student.tel_num}}</td>
+                            <td class="desktop">{{student.brith}}</td>
+                            <td class="desktop">{{student.place}}</td>
+                            <td class="desktop">{{student.price}}</td>
+                        </tr>
+                    {% endif %}
+                        
+                    
+                    
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="/static/js/plugins/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/static/js/plugins/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">$('#sampleTable').DataTable();</script>
+{% endblock content %}
+    

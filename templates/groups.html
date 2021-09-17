@@ -1,0 +1,49 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <h3>Guruhlar</h3>
+
+        <div class="row">
+            <div class="card">
+                <p href="" class="btn btn-success" title="Davomat olish"><i class="fa fa-eye"></i></p> - Guruhni ko'rish
+                <p href="" class="btn btn-danger" title="Tarixni ko'rish"><i class="fa fa-history"></i></p> - Tarixni ko'rish
+            </div>
+            {% for group in groups %}
+                
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-title-w-btn">
+                        <h3 class="title">{{group.name}}</h3>
+                        <div class="btn-group">
+                            <a class="btn btn-info" href="{% url 'main:update_group' group.pk %}" title="O'zgartirish"><i class="fa fa-lg fa-edit"></i></a>
+                            <a class="btn btn-warning" href="{% url 'main:delete_group' group.pk %}" title="O'chirish"><i class="fa fa-lg fa-trash"></i></a>
+                        </div>
+                    </div><hr>
+                    <div class="card-body">
+                        <p><b>Fani: </b>{{group.subject}}</p>
+                        <p><b>O'qituvchisi: </b>{{group.teacher.name}} {{group.teacher.surname}}</p>
+                        <p><b>O'quvchilar soni: </b>{{group.student.all.count}} ta</p>
+                        <p><b>Kunlari: </b>{{group.kunlari}}</p>
+                        <p><b>Vaqti: </b>{{group.time}}</p>
+                        <p><b>Bir oydagi darslar soni: </b>{{group.days_in_month}} ta</p>
+                        <p><b>To'lovi: </b>{{group.payment}} so'm</p>
+                    </div>
+                    <div class="card-footer btn-group">
+                        <a href="{% url 'main:group' group.pk %}" class="btn btn-success" title="Guruhni ko'rish"><i class="fa fa-eye"></i></a>
+                        <a href="{% url 'main:group_history' group.pk %}" class="btn btn-danger" title="Tarixni ko'rish"><i class="fa fa-history"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+
+            <div class="col-md-4">
+                <a href="{% url 'main:add_group' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Qo'shish</a>
+            </div>
+        </div>
+
+    </div>
+{% endblock content %}
+    

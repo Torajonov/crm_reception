@@ -1,0 +1,66 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <h2>Guruh tarixi >>> {{group.name}}</h2><hr>
+        <div class="card">
+            <div class="btn-group desktop">
+                    <p class="bg-success"># Kelgan kuni </p>
+                    <p class="bg-danger"># Kelmagan kuni </p>
+                    <p class="bg-warning"># Sababli Kelmagan kuni </p>
+                    <p class="bg-primary"># To'lov qilgan kuni </p>
+                    <button class="btn btn-success" id="showCame">Davomat tarixini ko'rish</button>
+                    <button class="btn btn-warning" id="showPayment">To'lov tarixini ko'rish</button>
+                </div>
+            <table class="table table-bordered desktop">
+              <thead>
+                <tr>
+                  <th>F,I</th>
+                </tr>
+              </thead>
+              <tbody style="scroll-snap-type: mandatory;">
+                  
+                  {% for stu in students %}
+                      <tr>
+                          <td><a href="{% url 'main:student' stu.pk %}">{{stu.name}}, {{stu.surname}}</a></td>
+
+                            {% for his in stu.history.all %}
+                        
+                            {% if his.came == True %}
+                                <td class="bg-success came">{{his.time}}</td>
+                                {% elif his.apset == True %}
+                                <td class="bg-warning came">{{his.time}}</td>
+                                {% else %}
+                                <td class="bg-danger came">{{his.time}}</td>
+                            {% endif %}
+                            
+                            {% endfor %}
+                          
+
+
+                            {% for his in stu.payment.all %}
+                                    <td class="bg-primary payment">{{his.time}} | <p class="label label-success">{{his.payed}} so'm</p></td>
+                            {% endfor %}
+                      </tr>
+                  {% endfor %}
+                        
+              </tbody>
+              <center><h2 class="mobile">Tarixni ko'rish uchun kamputerdan kiring!</h2></center>
+            </table>
+          </div>
+    </div>
+
+    <script>
+        $('td.payment').hide()
+        $('button#showPayment').on("click", function(){
+            $('td.payment').show()
+            $('td.came').hide()
+        })
+        $('button#showCame').on("click", function(){
+            $('td.payment').hide()
+            $('td.came').show()
+        })
+    </script>
+{% endblock content %}
+    
