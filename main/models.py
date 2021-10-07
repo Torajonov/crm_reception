@@ -9,7 +9,7 @@ class Subjects(models.Model):
     name = models.CharField("Fan nomi", max_length=150)
     
     def __str__(self):
-        return self.name
+        return self.name 
 
 
 class CameWith(models.Model):
