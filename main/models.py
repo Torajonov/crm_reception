@@ -9,7 +9,7 @@ class Subjects(models.Model):
     name = models.CharField("Fan nomi", max_length=150)
     
     def __str__(self):
-        return self.name 
+        return self.name
 
 
 class CameWith(models.Model):
@@ -30,10 +30,14 @@ class Teacher(models.Model):
     countsub = models.PositiveIntegerField("Bir oydagi darslar soni", default=0)
     allprice = models.PositiveIntegerField("Jami maosh", default=0)
 
+
+
+
     def __str__(self):
         return f"{self.name} {self.surname}"
 
-
+class Name(models.Model):
+    name = models.CharField(name='ismingizni kiriting',max_length=250)
 class Group(models.Model):
     own = models.ForeignKey(User, related_name="own_group", on_delete=models.CASCADE, blank=True, null=True)
     teacher = models.ForeignKey(Teacher, related_name="group", on_delete=models.CASCADE, blank=True)

@@ -1,12 +1,14 @@
 {% extends 'wrapper.html' %}
 {% load static %}
+
 {% block content %}
   
 
 <div class="content-wrapper">
   <div class="page-title">
     <div>
-      <h1><span class="bg-primary btn"><i class="fa fa-institution"></i>Matrix</span > o'quv markazi uchun maxsus dastur!</h1>
+      
+      <h1><span class="bg-primary btn"><i class="fa fa-institution"></i> Alfa </span > o'quv markazi uchun maxsus dastur !</h1>
       <p><i class="fa fa-plus"></i> O'quv markazingiz uchun ajoyib dastur!</p>
     </div>
   </div>
@@ -38,7 +40,7 @@
       </div>
     </div>
     <br>
-    <h2>Bizni qayerdan topib kelishyapti</h2>
+    <h2>O'quvchilarni kelish sabablari</h2>
     <div class="row">
       
       {% for came in camewith %}
@@ -48,8 +50,11 @@
             <h4 class="btn btn-warning">{{came.students.all.count}} ta</h4>
           </div>
         </div>
-      {% endfor %}    
+      {% endfor %}
+        
     </div>
   </div>
 </div>
+    <!-- Javascripts-->
+    
     {% endblock content %}

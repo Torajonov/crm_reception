@@ -21,6 +21,7 @@
                     </tr>
                     </thead>
                     <tbody>
+                    
                     {% for student in request.user.students.all %}
                     
                     {% if student.group.active == True %}
@@ -38,7 +39,6 @@
                             <td class="desktop">{{student.brith}}</td>
                             <td class="desktop">{{student.place}}</td>
                             <td class="desktop">{{student.price}}</td>
-                            <th> <button type="submit">Print</button></th>
                         </tr>
                     {% endif %}
                         
@@ -58,3 +58,4 @@
     <script type="text/javascript" src="/static/js/plugins/dataTables.bootstrap.min.js"></script>
     <script type="text/javascript">$('#sampleTable').DataTable();</script>
 {% endblock content %}
+    
