@@ -7,22 +7,22 @@
     <div class="col-md-7">
         <form method="POST" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
             <div class="card">
-                <h3 class="card-title">Guruh Qo'shish</h3>
+                <h3 class="card-title">Guruh Qo`shish</h3>
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="control-label col-md-3">Nomi</label>
+                        <label class="control-label col-md-3"> Guruh Nomi</label>
                         <div class="col-md-8">
                             <input name="name" class="form-control" type="text" placeholder="Nomini yozing">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3">Fani</label>
+                        <label class="control-label col-md-3">Qaysi fan uchun guruh</label>
                         <div class="col-md-8">
                             {{form.subject}}
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3">Kunlari</label>
+                        <label class="control-label col-md-3">Dars kunlari</label>
                         <div class="col-md-8">
                             <input name="kunlari" class="form-control" placeholder="Qaysi kunlarda bo'lishini yozing">
                         </div>
