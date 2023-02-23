@@ -1,320 +1,296 @@
-from django.shortcuts import redirect, render, get_object_or_404
-from django.views.generic import View, CreateView, DetailView, UpdateView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import DeleteView
-from .forms import *
-from .models import *
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.views import View
+from .models import *
 import datetime
+import calendar
+from django.contrib import messages
+from .filter import deco_login
 
-# Create your views here.
+from .default_add import *
 
-class HomeView(LoginRequiredMixin,View):
 
-    def get(self, request):
-        camewith = CameWith.objects.all()
-        groups = Group.objects.filter(active=True)
-        students = 0
-        for group in groups:
-            students += int(group.student.all().count())
+def add_day(request):
+    default_add_day()
+    return {"day":'added'}
+
+
+def add_month(request):
+    default_add_month()
+    return {"month":'added'}
+
+
+
+class HomeView(View):
+    @deco_login
+    def get(self,request):
+        print()
+        clients = Client.objects.all()
+        all_clients = clients.count()
+        payment = Payment.objects.all().order_by("-id")
+        
+        inactive = 0
+        active = 0
+        paused = 0
+        for c in clients:
+            if c.status == "ACTIVE":
+                active += 1
+            elif c.status == "INACTIVE":          
+                inactive += 1
+            else:
+                paused += 1
+        
         context = {
-            'groups':groups,
-            'students':students,
-            'camewith':camewith,
+            "all_clients":all_clients,
+            "active":active,
+            "inactive":inactive,
+            "paused":paused,
+            "payment":payment
+
         }
-        return render(request, 'index.html',context)
+        
+        return render (request,'index.html',context)
 
 
-class TeachersView(LoginRequiredMixin,View):
+class RegisterView(View):
+    @deco_login
+    def get(self,request):
+        tarif =  ComingType.objects.all()
 
-    def get(self, request):
-        return render(request, 'teachers.html')
+        context = {'tarif':tarif}
+        return render(request,'register.html',context)
 
+    def post(self,request):
+        user = request.user
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        ctypes = request.POST.get('tarif')
+        if user and name and phone and ctypes:
+            ctype = ComingType.objects.get(title=ctypes)
+            status = request.POST.get('status')
+            for c in Client.objects.all():
+                if phone == c.phone:
+                    messages.error(request, "Xatolik !!! Bu telefon raqam oldin ro'yxatdan o'tgan.")
+                    return redirect('/register')
+                else:
+                    pass
+            client = Client.objects.create(
+                        user=user,
+                        name=name,
+                        phone=phone,
+                        coming_type=ctype,
+                        status=status,
+                    )
 
-class StudentsView(LoginRequiredMixin,View):
+            # month create
 
-    def get(self, request):
-        return render(request, 'students.html')
-
-
-class GroupsView(LoginRequiredMixin,View):
-
-    def get(self, request):
-        groups = Group.objects.filter(active=True)
-        context = {'groups':groups}
-        return render(request, 'groups.html', context)
-
-
-class NewGroupsView(LoginRequiredMixin,View):
-
-    def get(self, request):
-        groups = Group.objects.filter(active=False)
-        context = {'groups':groups}
-        return render(request, 'new_groups.html', context)
-
-# ------Update views -------------------------------------------------------------------------------------------------
-
-class TeacherUpdateView(UpdateView):
-    model = Teacher
-    form_class = CreateTeacherForm
-    success_url = '/teachers/'
-    template_name = "update_teacher.html"
-
-class GroupUpdateView(UpdateView):
-    model = Group
-    form_class = CreateGroupForm
-    success_url = '/groups/'
-    template_name = "update_group.html"
-
-class StudentUpdateView(UpdateView):
-    model = Student
-    form_class = CreateStudentForm
-    success_url = '/students/'
-    template_name = "update_student.html"
-
-# ------Delete views------------------------------------------------------------------------------------------------
-
-class TeacherDeleteView(DeleteView):
-    model = Teacher
-    success_url = '/teachers/'
-    template_name = 'teacher_confirm_delete.html'
-
-class GroupDeleteView(DeleteView):
-    model = Group
-    success_url = '/groups/'
-    template_name = 'group_confirm_delete.html'
-
-class StudentDeleteView(DeleteView):
-    model = Student
-    success_url = '/students/'
-    template_name = 'student_confirm_delete.html'
+            now = datetime.datetime.now()
+            today = int(now.strftime("%d"))
+            month_days = calendar.monthrange(int(now.strftime("%Y")), int(now.strftime("%m")))[1]
+            res_days = month_days - today
+            if res_days >= client.coming_type.days:
+                coming_days = client.coming_type.days
+                price = client.coming_type.price
+            else:
+                daily_price = client.coming_type.price / client.coming_type.days
+                coming_days = res_days
+                price = daily_price * coming_days
+            sunday = coming_days // 7
+            coming_days -= sunday
+            month = Month.objects.create(
+                client=client,
+                coming_days=coming_days,
+                payment=int(price)
+            )
+            
+            tarifs =  ComingType.objects.all()
+            context = {'tarif':tarifs,'client':client, "uid":client.uid,"name":client.name}
+            messages.success(request, "Mijoz ro'yxatga olindi !")
+            return render(request=request, template_name='register.html',context=context)
+        else:
+            messages.success(request, "Xatolik qaytadan harakat qiling ! ")
+            tarifs = ComingType.objects.all()
+            context = {'tarif':tarifs, "status":"Nimadur noto`g`ri ketdi"} 
+            return render(request,'register.html', context)
 
 
-# --------Create views--------------------------------------------------------------------------------------------------
 
-def add_subject(request):
-    new_sub = request.GET.get('name')
-    s = Subjects.objects.create(name=new_sub)
-    s.save()
-    return redirect('/')
 
-def add_camewith(request):
-    camewith = request.GET.get('name')
-    s = CameWith.objects.create(name=camewith)
-    s.save()
-    return redirect('/')
+class DetailView(View):
+    @deco_login
 
-class TeacherCreateView(LoginRequiredMixin,View):
-    
-    def get(self, request):
-        form = CreateTeacherForm(request.GET)
-        context = {
-            'form':form
+    def get(self, request, id):
+        queryset = Client.objects.get(id=id)
+        months = Month.objects.filter(client=queryset).order_by("-id")
+        payment = months
+        tarif = ComingType.objects.all()
+
+        return render(request, "detail.html", {"client":queryset, "months":months, "tarifs":tarif})
+
+    def post(self, request, id):
+        if request.POST.get('delete'):
+            client = Client.objects.filter(id=int(id))
+            client.delete()
+            messages.success(request, "Mijoz ro'yxatdan o'chirildi !")
+            return redirect("main:list_client")
+        else:
+
+            name = request.POST['name']
+            phone = request.POST['phone']
+            status = request.POST['status']
+            tarif = request.POST['tarif']
+            tarif = ComingType.objects.get(title=tarif)
+            client = Client.objects.filter(id=id)
+            client.update(name=name, phone=phone, coming_type=tarif, status=status)
+        return redirect(f"/detail/{id}")
+
+
+def edit_day(request, day_id):
+    day = get_object_or_404(Day, id=day_id)
+    resp = request.GET.get('day_result')
+    if resp == "true":
+        day.came = True
+        day.save()
+        return JsonResponse({"came":"True"})
+    elif resp == "false":
+        day.came = False
+        day.save()
+        return JsonResponse({"came":"False"})
+    else:
+        return JsonResponse({"came":"not valid"})
+
+
+def barcode_came(request, uid):
+    try:
+        client = get_object_or_404(Client, uid=uid)
+        day = client.months.last().days.last()
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        if str(today) == str(day):
+            day.came = True
+            day.save()
+            status = f"{client.name} bugun mashg'ulotga keldi."
+        else:
+            status = f"{client.name} avval to'lovni amalga oshiring!"
+    except:
+        status = "UID noto`g`ri"
+    return JsonResponse({"status":status})
+
+
+class DavomatView(View):
+    @deco_login
+
+    def get(self,request):
+        queryset = Client.objects.all().order_by("-id")
+        tarif = ComingType.objects.all()
+        data = {
+            "clients":queryset,
+            "tarif":tarif
         }
-        return render(request, 'add_teacher.html', context)
+        return render (request,'new_table.html', data)
 
 
-
+class PaymentView(View):
+    @deco_login
+    def get(self, request):
+        try:
+            client_id = request.GET['client_id']
+            client = Client.objects.get(uid=client_id)
+            month = Month.objects.filter(client=client).last()
+            data = {
+                "name":client.name,
+                "uid":client.uid,
+                "payment":month.payment,
+                "balance":client.balance
+            }
+            return JsonResponse(data)
+        except:
+            clients = Client.objects.all()
+            return render(request, 'forms-layouts.html', {"clients":clients})
 
     def post(self, request):
-        form = CreateTeacherForm(request.POST, request.FILES)
-        if form.is_valid():
-            new = form.save(commit=False)
-            teacher = Teacher.objects.create(
-                user=request.user,
-                name=new.name,
-                surname=new.surname,
-                image=new.image,
-                tel_num=new.tel_num,
-                subject=new.subject,
-                price=new.price, 
-            )
-            teacher.save()
-            return redirect('/')
-        context = {
-            'form':form
-        }
-        return render(request, 'add_teacher.html', context)
-
-def create_group(request):
-    form = CreateGroupForm(request.GET)
-    if request.method == 'POST':
-        form = CreateGroupForm(request.POST, request.FILES)
-        if form.is_valid():
-            f = form.save(commit=False)
-            new = Group.objects.create(
-                own=request.user,
-                teacher=f.teacher,
-                name=f.name,
-                subject=f.subject,
-                kunlari=f.kunlari,
-                time=f.time,
-                payment=f.payment,
-                days_in_month=f.days_in_month,
-            )
-            new.save()
-            return redirect('/')
-        else:
-            form = CreateGroupForm()
-    return render(request, 'add_group.html',{'form':form})
-
-def create_student(request):
-    form = CreateStudentForm(request.GET)
-    if request.method == 'POST':
-        form = CreateStudentForm(request.POST, request.FILES)
-        if form.is_valid():
-            f = form.save(commit=False)
-            new = Student.objects.create(
-                own=request.user,
-                group=f.group,
-                name=f.name,
-                surname=f.surname,
-                brith=f.brith,
-                image=f.image,
-                tel_num=f.tel_num,
-                place=f.place,
-                price=f.price,
-                camewith=f.camewith,
-                password_img=f.password_img,
-            )
-            new.save()
-            return redirect('/')
-        else:
-            form = CreateStudentForm()
-    return render(request, 'add_student.html', {'form':form})
-
-
-# --------Detail views--------------------------------------------------------------------------------------------------
-
-def group_detail(request, pk):
-    group = Group.objects.get(pk=pk)
-    context = {
-        'group':group,
-    }
-    return render(request, 'group_detail.html', context)
-
-def student_detail(request, pk):
-    student = get_object_or_404(Student, pk=pk)
-    context = {'stu':student}
-    return render(request, "student_detail.html", context)
-
-def get_plus(request):
-    pk = request.GET.get('data')
-    action = request.GET.get('action')
-    student = Student.objects.get(pk=pk)
-    if action == "came":
-        history = CameHistory.objects.create(
-            student=student,
-            time=datetime.datetime.now().strftime('%d/%m/%y'),
-            came=True,
-        )
-        history.save()
+        clients = Client.objects.all()
+        uid = request.POST.get('uid')
+        payment = int(request.POST.get('payment'))
+        discount = int(request.POST.get('discount'))
+        balance = int(request.POST.get('balance'))
+        discounted = payment + discount + balance
         try:
-            student.allprice+=(student.group.payment/student.group.days_in_month)
+            obj = get_object_or_404(Client, uid=uid)
         except:
-            None
-        student.countsub+=1
-        student.save()
-    elif action == "apset":
-        history = CameHistory.objects.create(
-            student=student,
-            time=datetime.datetime.now().strftime('%d/%m/%y'),
-            came=False,
-            apset=True,
-        )
-        history.save()
+            obj = False
+        if obj == False:
+            return render(request, 'forms-layouts.html', {"response":"ID noto`g`ri berildi","status":"danger","clients":clients})
+        else:
+            month = Month.objects.filter(client=obj).last()
+            if month.payment == discounted:
+                month.payment = 0
+                month.payed = True
+                obj.debt = False
+            elif month.payment < discounted:
+                balance = discounted - month.payment
+                month.payment = 0
+                month.payed = True
+                obj.debt = False
+                obj.balance += balance
+            else:
+                month.payment -= discounted
+                month.payed = False
+                obj.debt = True
+            month.save()
+            # obj.balance -= balance
+            obj.save()
+            Payment.objects.create(
+                month=month,
+                money=payment,
+                discount=discount
+            )
+            try:
+                last_day = month.days.last().date
+            except:
+                last_day = 'no last day'
+            today = datetime.datetime.now()
+            if last_day != today:
+                Day.objects.create(month=month)
+            messages.success(request, "To'lov amalga oshirildi ! ")
+            return redirect('/payment')
+
+
+def detail_payment(request):
+    month_id = int(request.POST.get('month_id'))
+    payment = int(request.POST.get('payment'))
+    month = Month.objects.get(id=month_id)
+    obj = month.client
+    if month.payment == payment:
+        month.payment = 0
+        month.payed = True
+        obj.debt = False
+    elif month.payment < payment:
+        balance = payment - month.payment
+        month.payment = 0
+        month.payed = True
+        obj.debt = False
+        obj.balance = balance
     else:
-        history = CameHistory.objects.create(
-            student=student,
-            time=datetime.datetime.now().strftime('%d/%m/%y'),
-            came=False,
-        )
-        history.save()
-        try:
-            student.allprice+=(student.group.payment/student.group.days_in_month)
-        except:
-            None
-        student.save()
-    return JsonResponse({'status':200})
-
-
-# --------Other functions--------------------------------------------------------------------------------------------------
-
-def call(request):
-    pk = request.GET.get('pk')
-    stu = Student.objects.get(pk=pk)
-
-    stu.called = True
-    stu.save()
-
-    return JsonResponse({'status':'ok'})
-
-def active_group(request, pk):
-    group = Group.objects.get(pk=pk)
-    group.active = True
-    group.save()
-
-    return redirect('/groups/')
-
-def pay(request):
-    pk = request.GET.get('pk')
-    action = request.GET.get('action')
-    student = Student.objects.get(pk=pk)
-    if action == 'skit':
-        v = request.GET.get('price')
-        value = int(v) - int(student.price)
-    else:
-        value = request.GET.get('price')
-    teacher = student.group.teacher
-    price = (int(value) / 100) * int(teacher.price)
-    teacher.allprice += price
-    teacher.save()
-    history = PayedHistory.objects.create(
-        student=student,
-        time=datetime.datetime.now().strftime('%d-%m-%Y'),
-        payed=value,
+        month.payment -= payment
+        month.payed = False
+        obj.debt = True
+    month.save()
+    obj.save()
+    py = Payment.objects.create(
+        month=month,
+        money=payment
     )
-    history.save()
-    student.allprice = 0
-    student.countsub = 0
-    student.save()
-    return JsonResponse({'status':200})
+    return JsonResponse({"status":"ok"})
 
-def pay_for_teacher(request):
-    pk = request.GET.get('pk')
-    value = request.GET.get('price')
-    teacher = Teacher.objects.get(pk=pk)
-    history = TeacherHistory.objects.create(
-        teacher=teacher,
-        time=datetime.datetime.now().strftime('%d-%m-%Y'),
-        price=value,
-    )
-    history.save()
-    teacher.countsub = 0
-    teacher.allprice = 0
-    teacher.save()
-    return JsonResponse({'status':200})
+def detail_month_sum(request):
+    month_id = request.GET.get('id')
+    month = Month.objects.get(id=month_id)
+    payment = month.payment
+    return JsonResponse({'payment':payment})
 
-def group_history(request, pk):
-    group = get_object_or_404(Group, pk=pk)
-    students = Student.objects.filter(group=group)
-    context = {
-        'group':group,
-        'students':students,
-    }
-    return render(request, 'group_history.html', context)
+def handler_404(request,exception):
+    return render(request, "404.html")
 
-def brithdays(request):
-    today = datetime.datetime.now().strftime('%m-%d')
-    student = Student.objects.filter(brith__icontains=today)
+def handler_500(request):
+    return render(request, "500.html")
 
-    context = {
-        'today':today,
-        'stu':student
-    }
-    return render(request, "brithday.html", context)
-
-
-class FaqView(TemplateView):
-    template_name = "faq.html"

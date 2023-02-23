@@ -1,116 +1,112 @@
 from django.db import models
-from django.contrib.auth.models import User
-import random
+from django.contrib.auth.models import  User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-from django.db.models.fields import DateTimeField
-# Create your models here.
 
-class Subjects(models.Model):
-    name = models.CharField("Fan nomi", max_length=150)
-    
+def random_numbers(lenth):
+    import random
+    RANDOM_NUMS = [0,1,2,3,4,5,6,7,8,9]
+    rnums = ''
+    for i in range(0, lenth):
+        r = random.choice(RANDOM_NUMS)
+        rnums += str(r)
+    return rnums
+
+
+
+
+class Client(models.Model):
+    user = models.ForeignKey(User, related_name="clients", on_delete=models.CASCADE)
+    uid = models.SlugField(blank=True,unique=True)
+    name = models.CharField("Ism familiyasi", max_length=150)
+    phone = models.CharField("Telefon raqami", max_length=50, unique=True)
+    coming_type = models.ForeignKey("main.ComingType", related_name="type_clients",
+                                    on_delete=models.SET_NULL, blank=True, null=True)
+    STATUS_TYPES = (
+        ("ACTIVE","Faol"),
+        ("INACTIVE","Faolmas"),
+        ("PAUSED","Pauza")
+    )
+    status = models.CharField(choices=STATUS_TYPES, max_length=50, blank=True, null=True)
+    debt = models.BooleanField("Qarzi bor", default=True)
+    created = models.DateField("Qo'shilgan sana", auto_now_add=True)
+    updated = models.DateTimeField("O'zgartirilgan vaqt", auto_now=True)
+
+    balance = models.IntegerField(default=0)
+
     def __str__(self):
         return self.name
 
 
-class CameWith(models.Model):
-    name = models.CharField("Sabab nomi", max_length=250)
+class ComingType(models.Model):
+    title = models.CharField("Tarif nomi", max_length=50)
+    days = models.PositiveIntegerField("Kunlari(bir oyda nech kun)")
+    price = models.PositiveIntegerField("Narxi")
+    info = models.TextField("Tarif xaqida ma'lumot", blank=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
-class Teacher(models.Model):
-    user = models.ForeignKey(User, related_name="teacher", on_delete=models.CASCADE, blank=True, null=True)
-    name = models.CharField("Ismi", max_length=150)
-    surname = models.CharField("Familiyasi", max_length=150)
-    image = models.ImageField("O'qituvchi rasmi", upload_to='teacher_img/',null=True, blank=True)
-    tel_num = models.CharField("Telefon raqami", max_length=50, blank=True)
-    subject = models.ForeignKey(Subjects, related_name="teachers", on_delete=models.PROTECT)
-    price = models.PositiveIntegerField("Bitta dars uchun narx", default=0)
-    # harajatlar hisobi
-    countsub = models.PositiveIntegerField("Bir oydagi darslar soni", default=0)
-    allprice = models.PositiveIntegerField("Jami maosh", default=0)
-
+@receiver(post_save, sender=Client)
+def uid_save(sender, instance, created, *args, **kargs):
+    if created == True:
+        try:
+            uid = random_numbers(6)
+            instance.uid = uid
+        except:
+            uid = random_numbers(6)
+            instance.uid = uid
+        instance.save()
 
 
-
-    def __str__(self):
-        return f"{self.name} {self.surname}"
-
-class Name(models.Model):
-    name = models.CharField(name='ismingizni kiriting',max_length=250)
-class Group(models.Model):
-    own = models.ForeignKey(User, related_name="own_group", on_delete=models.CASCADE, blank=True, null=True)
-    teacher = models.ForeignKey(Teacher, related_name="group", on_delete=models.CASCADE, blank=True)
-    name = models.CharField("Guruh nomi", max_length=350)
-    subject = models.ForeignKey(Subjects, related_name="teachers_group", on_delete=models.CASCADE, blank=True)
-    time = models.CharField("Vaqti", max_length=50)
-    kunlari = models.CharField("Hafta kunlari", max_length=350)
-    payment = models.PositiveIntegerField("To'lov", default=0)
-    days_in_month = models.PositiveIntegerField("Kun soni", default=0)
-
-    active = models.BooleanField("aktiv/aktiv emas", default=False)
-    
-    def __str__(self):
-        if self.active == True:
-            return self.name
-        else:
-            return f"{self.name} (Qabuldagi guruh)"
-
-
-class Student(models.Model):
-    own = models.ForeignKey(User, related_name="students", on_delete=models.CASCADE, blank=True, null=True)
-    group = models.ForeignKey(Group, related_name="student", on_delete=models.CASCADE, blank=True, null=True)
-    # shaxsiy ma'lumotlari
-    name = models.CharField("Ismi", max_length=150)
-    surname = models.CharField("Familiyasi", max_length=150)
-    brith = models.CharField("Tug'ulgan sanasi", max_length=50)
-    image = models.ImageField("O'quvchi rasmi", upload_to='student_img/', blank=True, null=True)
-    password_img = models.ImageField("Pasort rasmi", upload_to='students_passport', blank=True)
-    tel_num = models.CharField("Telefon raqami", max_length=50, blank=True)
-    place = models.CharField("Yashash manzili", max_length=50)
-    # harajatlar hisobi
-    price = models.PositiveIntegerField("Chegirma",default=0)
-    countsub = models.PositiveIntegerField("Bir oydagi darslar soni",default=0)
-    allprice = models.PositiveIntegerField("Jami to'lov",default=0)
-
-    called = models.BooleanField("called/not called",default=False)
-    camewith = models.ForeignKey(CameWith, related_name="students", blank=True, on_delete=models.PROTECT)
-        
-    def __str__(self):
-        return self.name
-
-
-class CameHistory(models.Model):
-    student = models.ForeignKey(Student, related_name="history", on_delete=models.CASCADE)
-    time = models.CharField("Kelgan sanasi", blank=True, max_length=100)
-    came = models.BooleanField("keldi/kelmadi", default=False)
-    apset = models.BooleanField("sababli/sababsiz", default=False)
-
-    class Meta:
-        ordering = ['-id']
+class Month(models.Model):
+    client = models.ForeignKey(Client, related_name="months", on_delete=models.SET_NULL, null=True, blank=True)
+    # main coming_types dan olinadi
+    coming_days = models.PositiveIntegerField("kelishi kerak bo`ldan kunlar")
+    payment = models.PositiveIntegerField("to`lashi kerak bo`lgan summa")
+    created = models.DateField(auto_now_add=True)
+    came = models.PositiveIntegerField("kelgan kunlari", default=0)
+    payed = models.BooleanField("To`landi", default=False)
 
     def __str__(self):
-        return self.student.name
+        return str(self.id)
 
 
-class PayedHistory(models.Model):
-    student = models.ForeignKey(Student, related_name="payment", on_delete=models.CASCADE)
-    time = models.CharField("To'lagan sanasi", blank=True, max_length=100)
-    payed = models.PositiveIntegerField("summasi", default=0)
-
-    class Meta:
-        ordering = ['-id']
+class Day(models.Model):
+    month = models.ForeignKey(Month, related_name="days", on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    came = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.student.name
-    
+        return str(self.date)
 
-class TeacherHistory(models.Model):
-    teacher = models.ForeignKey(Teacher, related_name="history", on_delete=models.CASCADE)
-    time = models.CharField("to'langan vaqt", blank=True, max_length=150)
-    price = models.PositiveIntegerField("to'langan summa", default=0)
+
+class Payment(models.Model):
+    month = models.ForeignKey(Month, related_name="payments", on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    money = models.IntegerField("Puli")
+    discount = models.PositiveIntegerField("chegirma", default=0)
 
     def __str__(self):
-        return self.teacher.name
+        return str(self.date)
 
-    
+
+class ExpenseCategory(models.Model):
+    title = models.CharField(max_length=255)
+    created = models.DateField("Qo'shilgan sana", auto_now_add=True)
+
+    def __str__(self):
+        return str(self.title)
+
+
+class Expense(models.Model):
+    category = models.ForeignKey(ExpenseCategory, on_delete=models.SET_NULL , related_name='expense_category', null=True, blank=True)
+    summa = models.IntegerField(default=0)
+    info = models.TextField(blank=True, null=True)
+    created = models.DateField("Qo'shilgan sana", auto_now_add=True)
+
+    def __str__(self):
+        return str(self.summa)
+
+

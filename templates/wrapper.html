@@ -1,101 +1,315 @@
 <!DOCTYPE html>
-{% load static %}
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1">
-    <!-- CSS-->
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
-    <script src="/static/js/jquery-2.1.4.min.js"></script>
-    <title>Alfa Admin</title>
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries-->
-    <!--if lt IE 9
-    script(src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js')
-    script(src='https://oss.maxcdn.com/libs/respond./static/js/1.4.2/respond.min.js')
-    -->
-  </head>
-  <body class="sidebar-mini fixed">
-    <div class="wrapper">
-      <!-- Navbar-->
-      <header class="main-header hidden-print">
-        <a class="logo" href="{% url 'main:home' %}"><img src="/static/images/logo.jpg" alt=""> Alfa</a>
-        <nav class="navbar navbar-static-top">
-          <!-- Sidebar toggle button--><a class="sidebar-toggle" href="#" data-toggle="offcanvas"></a>
-          <!-- Navbar Right Menu-->
-          <div class="navbar-custom-menu">
-            <ul class="top-nav">
-              <!-- User Menu-->
-              <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus fa-lg"></i> Fan</a>
-                <ul class="dropdown-menu settings-menu">
-                  <li>
-                    <form action="{% url 'main:add_subject' %}" method="GET">
-                      <input type="text" class="form-control" placeholder="Fanni nomini yozing" name="name">
-                      <button type="submit" class="btn btn-primary">Qo'shish</button>
-                    </form>  
-                  </li>
-                </ul>
-              </li>
-              <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus fa-lg"></i> Sabab</a>
-                <ul class="dropdown-menu settings-menu">
-                  <li>
-                    <form action="{% url 'main:add_camewith' %}" method="GET">
-                      <input type="text" class="form-control" placeholder="Reklama" name="name">
-                      <button type="submit" class="btn btn-primary">Qo'shish</button>
-                    </form>  
-                  </li>
-                </ul>
-              </li>
-              <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus fa-lg"></i></a>
-                <ul class="dropdown-menu settings-menu">
-                  <li><a href="{% url 'main:add_teacher' %}"><i class="fa fa-plus fa-lg"></i> O'qituvchi</a></li>
-                  <li><a href="{% url 'main:add_group' %}"><i class="fa fa-plus fa-lg"></i> Guruh</a></li>
-                  <li><a href="{% url 'main:add_student' %}"><i class="fa fa-plus fa-lg"></i> O'quvchi</a></li>
-                </ul>
-              </li>
-              <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user fa-lg"></i></a>
-                <ul class="dropdown-menu settings-menu">
-                  <li><a href="{% url 'main:logout' %}"><i class="fa fa-sign-out fa-lg"></i> Chiqish</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </header>
-      <!-- Side-Nav-->
-      <aside class="main-sidebar hidden-print">
-        <section class="sidebar">
-          <!-- Sidebar Menu-->
-          <ul class="sidebar-menu">
-            <li class=""><a href="{% url 'main:home' %}"><i class="fa fa-home"></i><span>Bosh sahifa</span></a></li>
-            <li><a href="{% url 'main:students' %}"><i class="fa fa-graduation-cap"></i><span> O'quvchilar</span></a></li>
-            <li><a href="{% url 'main:teachers' %}"><i class="fa fa-user-secret"></i><span> O'qituvchilar</span></a></li>
-            <li><a href="{% url 'main:groups' %}"><i class="fa fa-list"></i><span> Guruhlar</span></a></li>
-            <li><a href="{% url 'main:new_groups' %}"><i class="fa fa-tasks"></i><span> Qabul</span></a></li>
-            <li><a href="{% url 'main:brithday' %}"><i class="fa fa-birthday-cake"></i><span> Tug'ilgan kunlar</span></a></li>
-            <li><a href="{% url 'main:faq' %}"><i class="fa fa-flag"></i><span> O'qib chiqish shart</span></a></li>
-          </ul>
-        </section>
-      </aside>
-{% block content %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>CRMFitness | Asosiy sahifa</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="/static/assets/img/favicon.png" rel="icon">
+  <link href="/static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- font-awesome  -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="/static/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="/static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="/static/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+  
+
+  <!-- Template Main CSS File -->
+  <link href="/static/assets/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: NiceAdmin - v2.4.1
+  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <script src="/static/assets/js/jquery-3.6.1.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="load-spinner">
+      <div class="p-1 spinner-grow text-danger" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="p-3 spinner-grow text-warning " role="status">
+        <span class="visually-hidden ">Loading...</span>
+      </div>
+      <div class="p-4 spinner-grow text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="{% url 'main:home' %}" class="logo d-flex align-items-center">
+        <img src="/static/assets/img/logo.png" alt="">
+        <span class="d-none d-lg-block">CRMFitness</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+    <div class="container">
+      <div class="row" style="float: right;">
+        <div class="col">
+          <form action="" method="post">
+           
+            <a type="button" class="btn btn-outline-danger" href="{% url 'main:logout' %}">logout</a>
+            
+        </form>
+        </div>
+      </div>
+    </div>
+
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      
+      {% if message.tags == 'success' %}
+      
+        <div class="alert alert-success alert-dismissible fade show msg" role="alert" >
+          <i class="bi bi-check-circle me-1"></i>
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% elif message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show msg" role="alert "   >
+          <i class="bi bi-x-circle me-1"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      
+      {% else %}
+      {% endif %}
+
+      {% endfor %}
+  </ul>
+  {% else %}
+{% endif %}
+
+<ul class="messages-attendance">
+
+  <div class="alert alert-success alert-dismissible fade show msg" role="alert "   >
+    <i class="bi bi-check-circle me-1"></i>
+    <span class="message-barcode"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+</ul>
+
+  <style>
+     .msg{
+        position: fixed;
+        top: 80px;
+        right: 0;
+        width: 30%;
+        animation: run 1s linear ;
+        z-index: 100;
+      }
+      @keyframes run {
+      from{ 
+          transform: translateX(500px);   
+      }
+      to{
+          transform: translateX(-8px);   
+      }
+}
+    .nav-item:hover a{
+      transform: scale(1.2);
+    }
+    .nav-item:hover i{
+      margin-left: 20px;
+
+    }
+    .load-spinner{
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;      
+    }
     
-{% endblock content %}
+  </style>
+  
 
-<style>
-  @media (max-width: 770px) {
-    .desktop{
-        display: none;
-    }
-}
-  @media (min-width: 770px) {
-    .mobile{
-        display: none;
-    }
-}
-</style>
 
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/plugins/pace.min.js"></script>
-    <script src="/static/js/main.js"></script>
-  </body>
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed " href="{% url 'main:home' %}">
+          <i class="bi bi-grid"></i>
+          <span>Asosiy sahifa </span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:register' %}">
+          <i class="bi bi-person-plus-fill"></i>
+          <span>Ro'yhatdan o'tkazish </span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:list_client' %}">
+          <i class="bi bi-people-fill"></i>
+          <span>Umumiy Ro'yxat</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:payment' %}">
+          <i class="bi bi-currency-dollar"></i>
+          <span>To'lov</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:tarif' %}">
+          <i class="bi bi-bar-chart-steps"></i>
+          <span>Tariflar</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:expense' %}">
+          <i class="bx bx-exit"></i>
+          <span>Chiqimlar</span>
+        </a>
+      </li>
+     
+        
+        </ul>
+      </li><!-- End Forms Nav -->
+
+      <!-- End Tables Nav -->
+
+      
+    
+
+
+
+
+      <!-- End Blank Page Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+    {% block content %}
+    {% endblock content %}
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer mt-5">
+    <div class="copyright">
+      &copy; Copyright <strong><span>NAPA Team</span></strong>. All Rights Reserved
+    </div>
+   
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="/static/assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/assets/vendor/chart.js/chart.min.js"></script>
+  <script src="/static/assets/vendor/echarts/echarts.min.js"></script>
+  <script src="/static/assets/vendor/quill/quill.min.js"></script>
+  <script src="/static/assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="/static/assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="/static/assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="/static/assets/js/main.js"></script>
+  
+
+  <script>
+
+  </script>
+  <script>
+    $('ul.messages-attendance').hide()
+
+
+    const spinner = document.querySelector(".load-spinner");
+    window.addEventListener('load', () => {
+      spinner.style.opacity = '0';
+      
+      setTimeout(() => {
+        spinner.style.display = 'none';
+      }, 200)
+
+    });
+
+    
+    var barcode = '';
+    var interval;
+    document.addEventListener('keydown', function(evt) {
+        
+        if (interval)
+        clearInterval(interval);
+        
+        if (evt.code == 'Enter') {
+            if (barcode)
+                handleBarcode(barcode);
+            barcode = '';
+            return;
+        }
+        
+        if (evt.key != 'Shift')
+            barcode += evt.key;
+        interval = setInterval (() => barcode = '', 20);
+
+    });
+
+    function handleBarcode(scanned_barcode) {
+        var client_id = scanned_barcode
+        $.ajax({
+          url: `/client_barcode_came/${scanned_barcode}`,
+          type: "GET",
+          data: {},
+          success: function(response){
+            $('ul.messages-attendance').show()
+            $('span.message-barcode').html(response['status'])
+          }
+        })
+    }
+  </script>
+  
+  
+
+</body>
+
 </html>

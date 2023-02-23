@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>CRMFitness | Asosiy sahifa</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="/static/assets/img/favicon.png" rel="icon">
+  <link href="/static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- font-awesome  -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="/static/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="/static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="/static/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+  
+
+  <!-- Template Main CSS File -->
+  <link href="/static/assets/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: NiceAdmin - v2.4.1
+  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="load-spinner">
+      <div class="p-1 spinner-grow text-danger" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="p-3 spinner-grow text-warning " role="status">
+        <span class="visually-hidden ">Loading...</span>
+      </div>
+      <div class="p-4 spinner-grow text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="/static/assets/img/logo.png" alt="">
+        <span class="d-none d-lg-block">CRMFitness</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+    <div class="container">
+      <div class="row" style="float: right;">
+        <div class="col">
+          <form action="" method="post">
+           
+            <a type="button" class="btn btn-outline-danger" href="{% url 'main:logout' %}">logout</a>
+            
+        </form>
+        </div>
+      </div>
+    </div>
+
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show msg" role="alert "   >
+        <i class="bi bi-check-circle me-1"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      
+      {% endfor %}
+  </ul>
+  {% else %}
+{% endif %}
+
+  <style>
+     .msg{
+        position: fixed;
+        top: 80px;
+        right: 0;
+        width: 30%;
+        animation: run 1s linear ;
+        z-index: 100;
+      }
+      @keyframes run {
+      from{ 
+          transform: translateX(500px);   
+      }
+      to{
+          transform: translateX(-8px);   
+      }
+}
+    .nav-item:hover a{
+      transform: scale(1.2);
+    }
+    .nav-item:hover i{
+      margin-left: 20px;
+
+    }
+    .load-spinner{
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;      
+    }
+    
+  </style>
+  
+
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed " href="{% url 'main:home' %}">
+          <i class="bi bi-grid"></i>
+          <span>Asosiy sahifa </span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:register' %}">
+          <i class="bi bi-person-plus-fill"></i>
+          <span>Ro'yhatdan o'tkazish </span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:list_client' %}">
+          <i class="bi bi-people-fill"></i>
+          <span>Umumiy Ro'yxat</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:payment' %}">
+          <i class="bi bi-currency-dollar"></i>
+          <span>To'lov</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:tarif' %}">
+          <i class="bi bi-bar-chart-steps"></i>
+          <span>Tariflar</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'main:expense' %}">
+          <i class="bx bx-exit"></i>
+          <span>Chiqimlar</span>
+        </a>
+      </li>
+     
+        
+        </ul>
+      </li><!-- End Forms Nav -->
+
+      <!-- End Tables Nav -->
+
+      
+    
+
+
+
+
+      <!-- End Blank Page Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <!-- ======= Sidebar ======= -->
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>To'lov qo'shish</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Asosiy sahifa</a></li>
+          <li class="breadcrumb-item active">To'lov qo'shish</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-6 " style="margin: 0 auto; float:none; ">
+
+          
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Mijoz uchun to'lov qilish</h5>
+
+              <!-- Floating Labels Form -->
+              
+             
+              <form method="post" class="row g-3 p-1">
+                {% csrf_token %}
+                <div class="col-md-8">
+                  <div class="form-floating">
+                    <input list="brow" id="client-select" class="form-control">
+                    <datalist id="brow">
+                      {% for cl in clients %}
+                        <option  value="{{cl.uid}}">{{cl.name}}</option>
+                      {% endfor %}
+                    </datalist>  
+                    <label for="client-select">Mijozni tanlang</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-floating">
+                    <input type="number" id="balance" class="form-control" name="balance" required>
+                    <label for="balance">Balansi</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="col-md-12">
+                    <div class="form-floating">
+                      <input type="number" class="form-control" id="userId" placeholder="ID" name="uid" required>
+                      <label for="floatingCity">Mijoz ID si (skanerlang)</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="col-md-12">
+                    <div class="form-floating">
+                      <input type="number" class="form-control" id="payment" placeholder="payment" name="payment" required>
+                      <label for="floatingCity">To'lov miqdori</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="col-md-12">
+                    <div class="form-floating">
+                      <input type="number" value="0" class="form-control" id="discount" placeholder="payment" name="discount" required>
+                      <label for="floatingCity">Chegirma</label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="text-left">
+                  <button type="submit" class="btn btn-primary">Tasdiqlash</button>
+                  <button type="reset" class="btn btn-secondary">Tozalash</button>
+                </div>
+              </form><!-- End floating Labels Form -->
+                
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script>
+
+      $('#client-select').on('change', function(){
+        var client_id = $(this).val()
+        $.ajax({
+          url: "/payment/",
+          type: "GET",
+          data: {
+            "client_id":client_id
+          },
+          success: function(response){
+            console.log('response')
+            $("#userId").val(response['uid'])
+            var balanced = response['payment'] - response['balance']
+            $("#payment").val(balanced)
+            $("#balance").val(response['balance'])
+            $("#client-select").val(response['name'])
+            
+          }
+        })
+      })
+
+
+    var barcode = '';
+    var interval;
+    document.addEventListener('keydown', function(evt) {
+        
+        if (interval)
+        clearInterval(interval);
+        
+        if (evt.code == 'Enter') {
+            if (barcode)
+                handleBarcode(barcode);
+            barcode = '';
+            return;
+        }
+        
+        if (evt.key != 'Shift')
+            barcode += evt.key;
+        interval = setInterval (() => barcode = '', 20);
+
+    });
+
+    function handleBarcode(scanned_barcode) {
+        console.log('sssssss')
+        var client_id = scanned_barcode
+        $.ajax({
+          url: "/payment/",
+          type: "GET",
+          data: {
+            "client_id":client_id
+          },
+          success: function(response){
+            $("#userId").val(response['uid'])
+            $("#payment").val(response['payment'])
+            $("#client-select").val(response['name'])
+            $("#balance").val(response['balance'])
+          }
+        })
+    }
+
+    </script>
+
+  </main><!-- End #main -->
+
+  <footer id="footer" class="footer mt-5">
+    <div class="copyright">
+      &copy; Copyright <strong><span>Texnopark Back-end Team</span></strong>. All Rights Reserved
+    </div>
+   
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="/static/assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/assets/vendor/chart.js/chart.min.js"></script>
+  <script src="/static/assets/vendor/echarts/echarts.min.js"></script>
+  <script src="/static/assets/vendor/quill/quill.min.js"></script>
+  <script src="/static/assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="/static/assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="/static/assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="/static/assets/js/main.js"></script>
+  
+ 
+
+  <script>
+    const spinner = document.querySelector(".load-spinner");
+    window.addEventListener('load', () => {
+      spinner.style.opacity = '0';
+      
+      setTimeout(() => {
+        spinner.style.display = 'none';
+      }, 200)
+
+    });
+  </script>
+  
+  
+
+</body>
+
+</html>
