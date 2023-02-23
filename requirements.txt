@@ -22,7 +22,7 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 environ==1.0
 environs==9.5.0
-gunicorn==20.1.0
+gunicorn
 httplib2==0.20.4
 idna==3.4
 oauthlib==3.2.0
@@ -45,6 +45,6 @@ typing==3.7.4.3
 tzdata==2022.2
 whitenoise==6.3.0
 xdg==5
-xkit==0.0.0
+
 yarl==1.8.2
 zipp==1.0.0
